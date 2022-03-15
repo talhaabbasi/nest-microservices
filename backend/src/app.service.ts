@@ -9,6 +9,7 @@ export class AppService {
 
   constructor(
     @Inject('COMMUNICATION') private readonly communication: ClientProxy,
+    @Inject('ANALYTICS') private readonly analytics: ClientProxy,
   ) {}
 
   getHello(): string {
@@ -18,5 +19,10 @@ export class AppService {
   createUser(request: CreateUserRequest) {
     this.users.push(request);
     this.communication.emit('user_created', new CreateUserEvent(request.email));
+    this.analytics.emit('user_created', new CreateUserEvent(request.email));
+  }
+
+  getAnalytics() {
+    return this.analytics.send({ cmd: 'get_analytics' }, {});
   }
 }
